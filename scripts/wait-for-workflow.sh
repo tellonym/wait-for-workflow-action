@@ -4,10 +4,12 @@
 max_wait_minutes="${MAX_WAIT_MINUTES}"
 timeout="${TIMEOUT}"
 interval="${INTERVAL}"
+# will be used to filter out workflow runs older than the defined offset
+minimum_time_offset="${MINIMUM_TIME_OFFSET}"
 counter=0
 
-# Get the current time in ISO 8601 format
-current_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+# Get the time in ISO 8601 format
+minimum_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ" -d "${minimum_time_offset} min ago")
 
 # Check if REF has the prefix "refs/heads/" and append it if not
 if [[ ! "$REF" =~ ^refs/heads/ ]]; then
@@ -41,9 +43,9 @@ else
       echo "❌ Invalid input provided (organization, repository, or workflow ID). Please check your inputs."
       exit 1
     fi
-    run_id=$(echo "$response" | \
-      jq -r --arg ref "$(echo "$REF" | sed 's/refs\/heads\///')" --arg current_time "$current_time" \
-      '.workflow_runs[] | select(.head_branch == $ref and .created_at >= $current_time) | .id')
+    run_id=$(echo "$response" |
+      jq -r --arg ref "$(echo "$REF" | sed 's/refs\/heads\///')" --arg minimum_time "$minimum_time" \
+        '.workflow_runs[] | select(.head_branch == $ref and .created_at >= $minimum_time) | .id')
     if [ -n "$run_id" ]; then
       echo "🎉 Workflow triggered! Run ID: $run_id"
       break

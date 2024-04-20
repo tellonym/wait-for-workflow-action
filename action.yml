@@ -1,42 +1,46 @@
-name: 'Wait for Workflow Action'
+name: "Wait for Workflow Action"
 branding:
-  icon: 'clock'
-  color: 'blue'
-description: 'Waits for a specified workflow to complete before proceeding'
+  icon: "clock"
+  color: "blue"
+description: "Waits for a specified workflow to complete before proceeding"
 inputs:
   GITHUB_TOKEN:
-    description: 'GitHub token to access the repository'
+    description: "GitHub token to access the repository"
     required: true
   workflow_id:
-    description: 'ID of the workflow to wait for'
+    description: "ID of the workflow to wait for"
     required: false
   run_id:
-    description: 'If provided will wait for workflow run with specified id'
+    description: "If provided will wait for workflow run with specified id"
     required: false
   max_wait_minutes:
-    description: 'Maximum time script will wait to workflow run to be found in minutes'
+    description: "Maximum time script will wait to workflow run to be found in minutes"
     required: false
-    default: '5'
+    default: "5"
   interval:
-    description: 'Interval in seconds which will be used for GitHub API calls'
+    description: "Interval in seconds which will be used for GitHub API calls"
     required: false
-    default: '10'
+    default: "10"
   timeout:
-    description: 'Maximum time script will wait to workflow run to be finished'
+    description: "Maximum time script will wait to workflow run to be finished"
     required: false
-    default: '30'
+    default: "30"
+  minimum_time_offset:
+    description: "Minimum time offset in minutes between current time and workflow run creation time"
+    required: false
+    default: "15"
   org_name:
-    description: 'GitHub organization name'
+    description: "GitHub organization name"
     required: true
   repo_name:
-    description: 'GitHub repository name'
+    description: "GitHub repository name"
     required: true
   ref:
-    description: 'Branch reference (if empty, ref selected for trigger would be taken)'
+    description: "Branch reference (if empty, ref selected for trigger would be taken)"
     required: false
-    default: ''
+    default: ""
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Set execute permissions for script
       run: chmod +x ${{ github.action_path }}/scripts/wait-for-workflow.sh
@@ -53,3 +57,4 @@ runs:
         ORG_NAME: ${{ inputs.org_name }}
         REPO_NAME: ${{ inputs.repo_name }}
         REF: ${{ inputs.ref || github.ref }}
+        MINIMUM_TIME_OFFSET: ${{ inputs.minimum_time_offset }}
