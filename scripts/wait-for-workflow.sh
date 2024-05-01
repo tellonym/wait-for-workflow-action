@@ -16,11 +16,6 @@ if [[ ! "$REF" =~ ^refs/heads/ && ! "$REF" =~ ^refs/tags/ ]]; then
   REF="refs/heads/$REF"
 fi
 
-# Check if REF has the prefix "refs/heads/" and append it if not
-if [[ ! "$REF" =~ ^refs/heads/ ]]; then
-  REF="refs/heads/$REF"
-fi
-
 echo "ℹ️ Organization: ${ORG_NAME}"
 echo "ℹ️ Repository: ${REPO_NAME}"
 echo "ℹ️ Reference: $REF"
