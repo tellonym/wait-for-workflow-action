@@ -12,7 +12,12 @@ counter=0
 minimum_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ" -d "${minimum_time_offset} min ago")
 
 # Check if REF has the prefix "refs/heads/" and append it if not
-if [[ ! "$REF" =~ ^refs/heads/ && ! "$REF" =~ ^refs/tags/]]; then
+if [[ ! "$REF" =~ ^refs/heads/ && ! "$REF" =~ ^refs/tags/ ]]; then
+  REF="refs/heads/$REF"
+fi
+
+# Check if REF has the prefix "refs/heads/" and append it if not
+if [[ ! "$REF" =~ ^refs/heads/ ]]; then
   REF="refs/heads/$REF"
 fi
 
